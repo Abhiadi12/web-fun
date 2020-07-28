@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Goal Tracker</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    #title{
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      font-weight: bold;
+      color: indigo;
+    }
+    #title:hover
+    {
+      color:tomato;
+    }
+    .hoverable:hover{
+      color:white;
+      background-color: teal;
+    }
+    i:hover
+    {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body style="background-color: gray;">
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="#">
+      <img src="download.jpeg" width="40" height="40" alt="">
+      <span id="title">Goal tracker</span>
+    </a>
+  </nav>
+
+  <div class="card mt-3 mx-auto w-50 hoverable">
+    <div class="card-body">
+      <h5 class="card-title">Good Morning </h5>
+      <p class="card-text"><em>A good Morning always take you to lead the day .Start coding and learn new stuffs</em></p>
+      <p class="card-text"><small id="txt"></small></p>
+    </div>
+  </div>
+  <div class="goals mx-auto w-50 mx-auto mt-2">
+  <ul class="list-group" id="push-goal">
+    <li class="list-group-item mb-1" id="title">You can add max 5 goals</li>
+  </ul>
+</div>
+<button class="btn btn-primary mr-4 mt-2 float-right" id="clickme">Add Goal</button>
+</body>
+<script>
+  function isToday() {
+    var today = new Date();
+    var dateParameter = localStorage.getItem("date");
+    if(dateParameter != null)
+      dateParameter = new Date(dateParameter);
+    else
+    {
+      dateParameter = localStorage.setItem("date",today);
+      return;
+    }
+    if(dateParameter.getDate() != today.getDate())
+    {
+      localStorage.clear();
+      localStorage.setItem("date",today);
+    }
+  }
+  //check the current date match with the previous date
+
+  function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    if(h==0)
+    h+="0";
+    document.getElementById('txt').innerHTML =
+    h + ":" + m + ":" + s +"  Current Time"
+    var t = setTimeout(startTime, 500);
+  }
+  function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+  }
+
+  function displayGoals()
+  {
+    var goals = localStorage.getItem("goals");
+    if(goals != null)
+    {
+    goals = goals.split(",");
+    var length = goals.length;
+    for(let i=0;i<length;i++)
+    {
+      createNode(goals[i]);
+    }
+    }
+  }
+  function createNode(value)
+  {
+    var node = document.createElement("LI");                 // Create a <li> node
+    node.classList.add('list-group-item','list-group-item-info');
+    node.innerHTML = "<i class='fa fa-pencil float-right' id='edit' onclick='editTask(this)' style='color:red;'></i>"+ 
+    "<i class='fa fa-trash float-right' id='delete' onclick='deleteTask(this)' style='color:red; margin-right:4px;'></i>"+
+    "<i class='fa fa-check float-right' id='complete' onclick='completeTask(this)' style='color:red; margin-right:4px;'></i>";
+    var textnode = document.createTextNode(value);         // Create a text node
+    node.appendChild(textnode);                              // Append the text to <li>
+    document.getElementById("push-goal").appendChild(node);
+  }
+  function completeTask(element){
+    element.parentElement.classList.remove("list-group-item-info");
+    element.parentElement.classList.add("list-group-item-warning");
+    console.log("done");
+  }
+  function editTask(element)
+  {
+    var parent = element.parentNode.parentNode;
+    var li = element.parentNode;
+    var goals = localStorage.getItem("goals").split(",");
+    var index = Array.prototype.indexOf.call(parent.children, li); 
+    goals[index-1] = prompt("Please edit" , goals[index-1]);
+    localStorage.setItem("goals",goals.toString());
+    var textnode = document.createTextNode(goals[index-1]);         // Create a text node
+    node.appendChild(textnode);
+    displayGoals();
+  }
+  function deleteTask(element)
+  {
+    var parent = element.parentNode.parentNode;
+    var li = element.parentNode;
+    var index = Array.prototype.indexOf.call(parent.children, li);
+    parent.removeChild(li);
+
+    //change localstorage
+    var size = Number(localStorage.getItem("size")) - 1 + "";
+    localStorage.setItem("size",size);
+    var goals = localStorage.getItem("goals").split(",");
+    goals.splice(index-1,1);
+    goals.length > 0 ? localStorage.setItem("goals",goals.toString()) : localStorage.removeItem("goals");
+  }
+
+  document.getElementById("clickme").onclick = function(){ 
+    var value = prompt("enter your goal");
+    if(value==undefined || value=="")
+    {
+      alert("Please add something")
+    }
+    else
+    {
+      var total = Number(localStorage.getItem("size"));
+      alert(total);
+      if(total == null)
+      {
+        total = 0;
+        localStorage.setItem("size",total);
+      }
+
+      if(total < 5)
+      {
+        total+=1;
+        localStorage.setItem("size",total+"");
+        var goals = localStorage.getItem("goals");
+        if(total == 1)
+          goals = value;
+        else
+          goals = goals + "," + value;
+
+        localStorage.setItem("goals", goals);
+        createNode(value);
+      }
+      else
+      {
+        alert("can't add more than five goals")
+        alert(total);
+      }
+
+    }
+    }
+    startTime();
+    isToday();
+    displayGoals();
+
+</script>
+</html>

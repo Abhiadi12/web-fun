@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Getting Started with JavaScript</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body, .jumbotron { padding: 30px; }
+    .text-giant      { font-size: 40px; }
+  </style>
+</head>
+<body>
+
+  <div class="jumbotron">
+    <h2>How much do pies cost?</h2>
+
+    <form>
+
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input type="text" class="form-control" name="price" value="0">
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">
+          Quantity
+          <span class="label label-primary quantity-label">1</span>
+        </label>
+        <input type="range" class="form-control" name="quantity" value="1" min="1" max="10" step="1">
+      </div>
+
+			<div class="form-group">
+				<label for="location">location</lable>
+				<select class="location">
+  				<option value="">select city</option>
+  				<option value="puri">Puri</option>
+  				<option value="bbsr">Bhubaneswar</option>
+  				<option value="ctc">Cuttack</option>
+        </select>
+      </div>
+      
+      <div class="form-group auto-display">
+				<label for="address">address</lable>
+				<select id="address">
+        </select>
+      </div>
+    </form>
+
+		 <select class="w3-select" name="option" style="width:50%; margin:auto;">
+  <option value="" disabled selected>Choose your option</option>
+  <option value="1">Option 1</option>
+  <option value="2">Option 2</option>
+  <option value="3">Option 3</option>
+</select> 
+
+    <div class="text-right text-giant total"></div>
+
+  </div>
+ <div class="w3-bar w3-light-grey w3-border">
+  <a href="#" class="w3-bar-item w3-button w3-green"><i class="fa fa-home"></i></a>
+  <a href="#" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+  <a href="#" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i></a>
+  <a href="#" class="w3-bar-item w3-button"><i class="fa fa-globe"></i></a>
+  <a href="#" class="w3-bar-item w3-button"><i class="fa fa-sign-in"></i></a>
+</div> 
+
+
+  <script>
+    // grab everything we need
+    const priceInput    = document.querySelector('[name=price]');
+    const quantityInput = document.querySelector('[name=quantity]');
+    const total         = document.querySelector('.total');
+    const quantityLabel = document.querySelector('.quantity-label');
+    const locationInput = document.querySelector('.location');
+
+    // create the functions that we'll need   
+    function calculatePieCost() {
+      const price    = priceInput.value;
+      const quantity = quantityInput.value;
+      const cost     = price * quantity;
+      total.innerText = 'RS' + cost.toFixed(2);
+    }
+
+    function updateQuantityLabel() {
+      const quantity = quantityInput.value;
+      quantityLabel.innerText = quantity;
+    }
+
+    updateLocation = function(){
+      var addressJson = {
+        "puri" : ["abakash lane" , "subhadra lane" , "balighata" , "scs chowck"],
+        "bbsr" : ["infocity" , "saheed nagar" , "patia" , "sailashree vihar"],
+        "ctc" : ["padma lane" , "bara bati" , "sector-7 cda"]
+      }
+      
+      var value = locationInput.value;
+      var res="";
+      for(i in addressJson)
+      {
+        if(i===value)
+        {
+            for(j in addressJson[i])
+            {
+              res = res + `<option value='${addressJson[i][j]}'>${addressJson[i][j]}</option>`
+            }
+            document.getElementById("address").innerHTML = res;
+           // console.log("city changes");
+            break;
+        }
+        else
+        {
+          document.getElementById("address").innerHTML = "";
+        }
+      }
+    }
+    // on first run
+   calculatePieCost();
+
+    // add our event listeners     
+    priceInput.addEventListener('input', calculatePieCost);
+    quantityInput.addEventListener('input', calculatePieCost);
+    quantityInput.addEventListener('input', updateQuantityLabel);
+    locationInput.addEventListener('input' , updateLocation);
+  </script>
+</body>
+</html>
