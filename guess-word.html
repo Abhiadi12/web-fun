@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Guess It</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <style>
+    * {
+      margin: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: rgb(92, 187, 64);
+    }
+    header {
+      color:white;
+      width: 100%;
+      height: 200px;
+      background-color: transparent;
+      text-align: center;
+      font-size: 2rem;
+      text-shadow: 0px 6px 2px red;
+      z-index: 1;
+      letter-spacing: 5px;
+    }
+    .area {
+      max-width: 500px;
+      height: 400px;
+      background-color: rgb(117, 204, 90);
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
+    #read
+    {
+      margin-left: 25%;
+      width: 50%;
+      height: 10%;
+      border-radius: 12px;
+      outline: none;
+      display: none;
+    }
+    .btn {
+      width: 200px;
+      padding: 16px;
+      color: red;
+      background-color: white;
+      display: block;
+      outline: none;
+      text-align: center;
+      margin-left: 30%;
+      cursor: pointer;
+    }
+    .btn:hover{
+      -webkit-box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+      box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+      -webkit-transform: translateY(-0.25em);
+      transform: translateY(-0.25em);
+      --hover: #ddb226;
+      font-size: 20px;
+    }
+    .effect1{
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+       -moz-box-shadow: 0 10px 6px -6px #777;
+            box-shadow: 0 10px 6px -6px #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guess the word game</h1>
+  </header>
+  <section>
+    <div class="area effect1">
+      <h3 class="msg">
+        Let's start the quiz
+      </h3>
+      <input type="text" id="read">
+      <button class="btn" type="button">start</button>
+    </div>
+  </section>
+  <script>
+
+    window.addEventListener("load",()=>{
+
+        const message = document.querySelector(".msg");
+        const inputNode = document.getElementById("read");
+        const btn = document.querySelector(".btn");
+        const words = ["apple","orange","mango","guava","pumpkin","banana",
+        "cashew","grape","avocado","lychee","raspberry","watermelon","lime",
+        "kiwi","pineapple","strawberry","plum"];
+        let play = false;
+        let wordIs = "";
+
+        const getIndex = () => Math.floor(Math.random() * words.length);
+        const setQuestion = (word) => {
+          for(let i = 0;i < word.length ;i++)
+          {
+            let index = Math.floor(Math.random() * word.length);
+            let temp = word[i];
+            word[i] = word[index];
+            word[index] = temp;
+          }
+          return word;
+        }
+
+        btn.addEventListener("click",function(){
+          if(!play)
+          {
+            play = true;
+            inputNode.style.display = "block";
+            btn.innerHTML = "Guess";
+            let index = getIndex();
+            wordIs = words[index];
+            message.innerHTML = `Guess this: ${setQuestion(wordIs.split(""))}`;
+          }
+          else
+          {
+            if(inputNode.value.toLowerCase() == wordIs)
+            {
+              message.innerHTML = `correct ans boss hurry!!!`;
+              inputNode.value = "";
+              btn.innerHTML = "Play Again";
+              play = false;
+            }
+            else
+            {
+              message.innerHTML = `oops wrong try again: ${setQuestion(wordIs.split(""))}`;
+              inputNode.value = "";
+            }
+          }
+      });
+    });
+
+  </script>
+</body>
+</html>

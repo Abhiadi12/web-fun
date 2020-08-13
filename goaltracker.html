@@ -58,6 +58,8 @@
     else
     {
       dateParameter = localStorage.setItem("date",today);
+      var status = [0,0,0,0,0];
+      localStorage.setItem("status",status.toString());
       return;
     }
     if(dateParameter.getDate() != today.getDate())
@@ -89,6 +91,7 @@
   function displayGoals()
   {
     var goals = localStorage.getItem("goals");
+    var status = localStorage.getItem("status");
     if(goals != null)
     {
     goals = goals.split(",");
@@ -99,6 +102,7 @@
     }
     }
   }
+
   function createNode(value)
   {
     var node = document.createElement("LI");                 // Create a <li> node
@@ -110,11 +114,18 @@
     node.appendChild(textnode);                              // Append the text to <li>
     document.getElementById("push-goal").appendChild(node);
   }
+
   function completeTask(element){
-    element.parentElement.classList.remove("list-group-item-info");
-    element.parentElement.classList.add("list-group-item-warning");
-    console.log("done");
+    var parent = element.parentNode.parentNode;
+    var li = element.parentNode;
+    var index = Array.prototype.indexOf.call(parent.children, li);
+    li.classList.remove("list-group-item-info");
+    li.classList.add("list-group-item-warning");
+    var status = localStorage.getItem("status").split(",");
+    status[index-1] = "1";
+    localStorage.setItem("status",status.toString());
   }
+
   function editTask(element)
   {
     var parent = element.parentNode.parentNode;
@@ -123,23 +134,41 @@
     var index = Array.prototype.indexOf.call(parent.children, li); 
     goals[index-1] = prompt("Please edit" , goals[index-1]);
     localStorage.setItem("goals",goals.toString());
-    var textnode = document.createTextNode(goals[index-1]);         // Create a text node
-    node.appendChild(textnode);
-    displayGoals();
+    console.log(li.innerHTML)
   }
+
   function deleteTask(element)
   {
     var parent = element.parentNode.parentNode;
     var li = element.parentNode;
     var index = Array.prototype.indexOf.call(parent.children, li);
     parent.removeChild(li);
-
-    //change localstorage
     var size = Number(localStorage.getItem("size")) - 1 + "";
     localStorage.setItem("size",size);
     var goals = localStorage.getItem("goals").split(",");
     goals.splice(index-1,1);
     goals.length > 0 ? localStorage.setItem("goals",goals.toString()) : localStorage.removeItem("goals");
+  }
+
+  function isDone()
+  {
+    var status = localStorage.getItem("status");
+    if(status)
+    {
+      var ul = document.getElementById("push-goal");
+      var lists = ul.children;
+      var length = lists.length;
+      status = status.split(",");
+      for(let i = 1; i < length; i++)
+      {
+        if(status[i-1] == "1")
+        {
+        lists[i].classList.remove("list-group-item-info");
+        lists[i].classList.add("list-group-item-warning");
+        }
+      }
+
+    }
   }
 
   document.getElementById("clickme").onclick = function(){ 
@@ -179,9 +208,11 @@
 
     }
     }
+
     startTime();
     isToday();
     displayGoals();
+    isDone();
 
 </script>
 </html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>GSUB</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <style>
+    .circle{
+      border-radius: 50%;
+      width:200px;
+      height: 200px;
+      background-color: indigo;
+      margin-top: 20px;
+    }
+    
+    #logo {
+      width:180px;
+      margin-top: 20px;
+    }
+    .box {
+      cursor: pointer;
+      background-color: lightblue;
+      height: 20px;
+      width: 20px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="circle"></div>
+
+  <h2 class="title">gsap.to() Basic Usage</h2>
+  <img id="logo" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/logo-man.svg"/>
+
+  <div class="box blue"></div>
+  <div class="box orange"></div>
+  <div class="box grey"></div>
+  <div class="box pink"></div>
+  <div class="box red"></div>
+  <div class="box orange"></div>
+  <div class="box grey"></div>
+  <div class="box pink"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js"></script>
+  <script>
+    gsap.to(".circle", {duration: 2, x: 500, border: "5px solid red", 
+    borderRadius: "0%", backgroundColor:"pink"});
+    gsap.to(".green", {duration: 3, rotation: 360, scale: 2.5,backgroundColor:"red"});
+    gsap.from("#logo", {duration: 3, x: 500, opacity: 0, scale: 0.5});
+
+    gsap.from(".box", {
+      scale: 2.0,  
+      delay: 1.5, 
+      stagger: 0.2,
+      ease: "elastic", 
+      force3D: true
+    });
+
+    document.querySelectorAll(".box").forEach(function(box) {
+      box.addEventListener("click", function() {
+        gsap.to(".box", {
+          duration: 0.5, 
+          y: -100, 
+          stagger: 0.1,
+          ease: "back.in"
+        });
+      });
+    });
+    /* controlling animation 
+      /create a reference to the animation
+        var tween = gsap.to("#logo", {duration: 1, x: 100});
+
+        //pause
+        tween.pause();
+
+        //resume (honors direction - reversed or not)
+        tween.resume();
+
+        //reverse (always goes back towards the beginning)
+        tween.reverse();
+
+        //jump to exactly 0.5 seconds into the tween
+        tween.seek(0.5);
+
+        //jump to exacty 1/4th into the tween's progress:
+        tween.progress(0.25);
+
+        //make the tween go half-speed
+        tween.timeScale(0.5);
+
+        //make the tween go double-speed
+        tween.timeScale(2);
+
+        //immediately kill the tween and make it eligible for garbage collection
+        tween.kill();
+    */
+
+  </script>
+</body>
+</html>
